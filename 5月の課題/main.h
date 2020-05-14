@@ -1,5 +1,14 @@
 #pragma once
 
+enum SCN_ID
+{
+	SCN_ID_TITLE,		//ﾀｲﾄﾙ画面
+	SCN_ID_GAME,		//ｹﾞｰﾑ中
+	SCN_ID_GAMEOVER,	//ｹﾞｰﾑｵｰﾊﾞｰ
+	SCN_ID_MAX,
+};
+
+
 //画面
 #define	SCREEN_SIZE_X	600	//画面の横サイズ
 #define	SCREEN_SIZE_Y	500	//画面の縦サイズ
@@ -20,13 +29,24 @@
 //----------------------------------
 bool SystemInit(void);
 
-void GameMain(void);
+bool TitleInit(void);
 
-void GameMainDraw(void);
+void TitleScene(void);		//ﾀｲﾄﾙ画面
 
-//基幹関数
-bool SystemInit(void);
+void TitleDraw(void);		//ﾀｲﾄﾙｼｰﾝ画面
 
-void GameMain(void);
+bool GameInit(void);
 
-void GameMainDraw(void);
+void GameScene(void);
+
+void GameDraw(void);
+
+bool GameOverInit(void);
+
+void GameOverScene(void);
+
+void GameOverDraw(void);
+
+
+
+
