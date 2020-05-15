@@ -9,6 +9,7 @@
 #include "main.h"
 #include "keycheck.h"
 #include "effect.h"
+#include "player.h"
 
 SCN_ID scnID;	//ｹﾞｰﾑの状況移管理用
 SCN_ID ScnID_Old;//ｹﾞｰﾑの状態管理用
@@ -21,9 +22,7 @@ int haikeiImage;
 int titleImage;
 int overImage;
 
-int playerImage;				//自機の画像ID
-int playerPosX;					//自機のX座標
-int playerPosY;					//自機のY座標
+
 
 int enemyImage;
 
@@ -125,6 +124,7 @@ bool SystemInit(void)
 	}
 	SetDrawScreen(DX_SCREEN_BACK);					//ひとまずバックバッファに描画
 
+	PlayerSystemInit();
 	KeyInit();
 
 	// ------グラフィックの登録　---------
@@ -143,8 +143,7 @@ bool SystemInit(void)
 	{
 		rtnFlag = false;
 	}
-	//自機
-	playerImage = LoadGraph("image/player.png");
+	
 	//敵
 	enemyImage = LoadGraph("image/enemy.png");
 
@@ -176,6 +175,7 @@ bool TitleInit(void)
 //ﾀｲﾄﾙ画面処理
 void TitleScene(void)
 {
+	
 	if (keyDownTrigger[KEY_ID_SPACE])
 	{
 		fadeOut = true;
@@ -207,6 +207,8 @@ bool GameInit(void)
 void GameScene(void)
 {
 	GameDraw();
+	PlayerConttrol();
+	
 	if (keyDownTrigger[KEY_ID_SPACE])
 	{
 		//scnID = SCN_ID_GAMEOVER;
@@ -221,6 +223,7 @@ void GameDraw(void)
 {
 	ClsDrawScreen();	//裏になっているﾊﾞｯﾌｧをｸﾘｱする。
 
+	DrawGraph(playerPosX, playerPosY, playerImage, true);
 	//背景描画
 	DrawGraph(0, 0, haikeiImage, true);
 
@@ -244,6 +247,7 @@ bool GameOverInit(void)
 void GameOverScene(void)
 {
 	GameOverDraw();
+	//PlaySoundFile("sound/over.ogg");
 
 	if (keyDownTrigger[KEY_ID_SPACE])
 	{
