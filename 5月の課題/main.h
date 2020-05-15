@@ -13,6 +13,9 @@ enum SCN_ID
 #define	SCREEN_SIZE_X	600	//画面の横サイズ
 #define	SCREEN_SIZE_Y	500	//画面の縦サイズ
 
+#define SCROLL_SPEED 2
+#define BG_SIZE_Y       1000 //背景の縦サイズ
+
 //ｹﾞｰﾑｻｲｽﾞ
 #define	GAME_SIZE_X		600	//ゲームエリアの横サイズ
 #define	GAME_SIZE_Y		500	//ゲームエリアの縦サイズ
@@ -47,6 +50,8 @@ void GameOverScene(void);
 
 void GameOverDraw(void);
 
+
+//void PlayerDraw(void);
 
 
 

@@ -22,6 +22,10 @@ int haikeiImage;
 int titleImage;
 int overImage;
 
+int haikeiPosX;
+int haikeiPosY;
+int haikeiPosY1;
+int haikeiPosY2;
 
 
 int enemyImage;
@@ -124,6 +128,8 @@ bool SystemInit(void)
 	}
 	SetDrawScreen(DX_SCREEN_BACK);					//‚Ð‚Æ‚Ü‚¸ƒoƒbƒNƒoƒbƒtƒ@‚É•`‰æ
 
+	haikeiPosY1 = 0;		//”wŒi‚P‚ÌYÀ•W
+	haikeiPosY2 = -BG_SIZE_Y;		//”wŒi‚QYÀ•W
 	PlayerSystemInit();
 	KeyInit();
 
@@ -143,6 +149,8 @@ bool SystemInit(void)
 	{
 		rtnFlag = false;
 	}
+	
+	
 	
 	//“G
 	enemyImage = LoadGraph("image/enemy.png");
@@ -176,6 +184,7 @@ bool TitleInit(void)
 void TitleScene(void)
 {
 	
+
 	if (keyDownTrigger[KEY_ID_SPACE])
 	{
 		fadeOut = true;
@@ -206,6 +215,7 @@ bool GameInit(void)
 
 void GameScene(void)
 {
+	//PlayerDraw();
 	GameDraw();
 	PlayerConttrol();
 	
@@ -223,9 +233,28 @@ void GameDraw(void)
 {
 	ClsDrawScreen();	//— ‚É‚È‚Á‚Ä‚¢‚éÊÞ¯Ì§‚ð¸Ø±‚·‚éB
 
-	DrawGraph(playerPosX, playerPosY, playerImage, true);
+	
 	//”wŒi•`‰æ
-	DrawGraph(0, 0, haikeiImage, true);
+	//”wŒi‚Ì•`‰æ
+	DrawGraph(0, haikeiPosY1, haikeiImage, false);
+	DrawGraph(0, haikeiPosY2, haikeiImage, false);
+
+	haikeiPosY1 += 2;
+	if (haikeiPosY1 >= BG_SIZE_Y)
+	{
+		haikeiPosY1 = -BG_SIZE_Y;
+	}
+
+
+	haikeiPosY2 += 2;
+	if (haikeiPosY2 >= BG_SIZE_Y)
+	{
+		haikeiPosY2 = -BG_SIZE_Y;
+	}
+	
+	//haikeiPosY += SCROLL_SPEED;
+
+	PlayerDraw();
 
 	/*DrawGraph(0, 450, playerImage, true);
 
@@ -246,13 +275,17 @@ bool GameOverInit(void)
 
 void GameOverScene(void)
 {
+	
 	GameOverDraw();
-	//PlaySoundFile("sound/over.ogg");
 
+	
+	
 	if (keyDownTrigger[KEY_ID_SPACE])
 	{
+		
 		fadeOut = true;
 		//scnID = SCN_ID_TITLE;
+		
 	}
 	
 }
@@ -265,6 +298,9 @@ void GameOverDraw(void)
 
 	ScreenFlip();
 }
+
+
+
 
 
 
