@@ -10,7 +10,8 @@
 #include "keycheck.h"
 #include "effect.h"
 #include "player.h"
-
+#include "Shot.h"
+#include "enemy.h"
 SCN_ID scnID;	//ｹﾞｰﾑの状況移管理用
 SCN_ID ScnID_Old;//ｹﾞｰﾑの状態管理用
 
@@ -21,17 +22,12 @@ int gameCounter;
 int haikeiImage;
 int titleImage;
 int overImage;
+int clearImage;
 
 int haikeiPosX;
 int haikeiPosY;
 int haikeiPosY1;
 int haikeiPosY2;
-
-
-int enemyImage;
-
-
-
 
 //ファイル操作関数
 //bool SaveData(void);
@@ -50,7 +46,7 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 	// --------ゲームループ
 	while (ProcessMessage() == 0 && CheckHitKey(KEY_INPUT_ESCAPE) == 0)
 	{
-		
+
 		KeyCheck();
 
 		ClsDrawScreen(); // 画面消去
@@ -82,10 +78,34 @@ int WINAPI WinMain(HINSTANCE, HINSTANCE, LPSTR, int)
 				if (!FadeOutScreen(5))
 				{// フェードアウトが終わった後の処理を書く
 					fadeIn = true;
-					scnID = SCN_ID_GAMEOVER;
+					if (CheckHitKey(KEY_INPUT_SPACE))
+					{
+						scnID = SCN_ID_GAMEOVER;
+					}
+					if (enemyFlag = false)
+					{
+						scnID = SCN_ID_GAMECLEAR;
+					}
+					
 				}
+				
 			}
 			GameScene();
+			break;
+		case SCN_ID_GAMECLEAR:
+			if (fadeIn)
+			{
+				if (!FadeInScreen(5)) {} // フェードインが終わった後の処理を書く
+			}
+			if (fadeOut)
+			{
+				if (!FadeOutScreen(5))
+				{// フェードアウトが終わった後の処理を書く
+					fadeIn = true;
+					scnID = SCN_ID_TITLE;
+				}
+			}
+			GameClearScene();
 			break;
 		case SCN_ID_GAMEOVER:
 			if (fadeIn)
@@ -130,12 +150,20 @@ bool SystemInit(void)
 
 	haikeiPosY1 = 0;		//背景１のY座標
 	haikeiPosY2 = -BG_SIZE_Y;		//背景２Y座標
+	enemySystemInit();
 	PlayerSystemInit();
+	ShotSystemInit();
+	EffectInit();			// エフェクト用初期化処理
 	KeyInit();
 
 	// ------グラフィックの登録　---------
 	//ﾀｲﾄﾙ画面
 	if ((titleImage = LoadGraph("image/title.png")) == -1)
+	{
+		rtnFlag = false;
+	}
+	//ゲームクリア
+	if ((clearImage = LoadGraph("image/clear.png")) == -1)
 	{
 		rtnFlag = false;
 	}
@@ -149,11 +177,10 @@ bool SystemInit(void)
 	{
 		rtnFlag = false;
 	}
+
+
+
 	
-	
-	
-	//敵
-	enemyImage = LoadGraph("image/enemy.png");
 
 
 	// ------変数初期化　-----------
@@ -164,8 +191,7 @@ bool SystemInit(void)
 	///fileData.data1 = 1000;
 	//fileData.hiscore = 5000;
 
-
-	EffectInit();			// エフェクト用初期化処理
+	
 
 	return rtnFlag;
 }
@@ -183,7 +209,7 @@ bool TitleInit(void)
 //ﾀｲﾄﾙ画面処理
 void TitleScene(void)
 {
-	
+
 
 	if (keyDownTrigger[KEY_ID_SPACE])
 	{
@@ -191,6 +217,7 @@ void TitleScene(void)
 		//scnID = SCN_ID_GAME;
 	}
 	TitleDraw();
+
 }
 
 void TitleDraw(void)
@@ -199,7 +226,7 @@ void TitleDraw(void)
 
 	//ﾀｲﾄﾙﾛｺﾞ表示
 	DrawGraph(0, 0, titleImage, true);
-	
+
 	ScreenFlip();	//バックバッファとフロントﾊﾞｯﾌｧを入れ替える
 }
 
@@ -217,8 +244,10 @@ void GameScene(void)
 {
 	//PlayerDraw();
 	GameDraw();
-	PlayerConttrol();
-	
+	PlayerControl();
+	enemyControl();
+	ShotConttrol();
+	CheckHitObj();
 	if (keyDownTrigger[KEY_ID_SPACE])
 	{
 		//scnID = SCN_ID_GAMEOVER;
@@ -233,7 +262,7 @@ void GameDraw(void)
 {
 	ClsDrawScreen();	//裏になっているﾊﾞｯﾌｧをｸﾘｱする。
 
-	
+
 	//背景描画
 	//背景の描画
 	DrawGraph(0, haikeiPosY1, haikeiImage, false);
@@ -251,16 +280,51 @@ void GameDraw(void)
 	{
 		haikeiPosY2 = -BG_SIZE_Y;
 	}
-	
+
 	//haikeiPosY += SCROLL_SPEED;
 
 	PlayerDraw();
-
+	enemyDraw();
+	ShotDraw();
 	/*DrawGraph(0, 450, playerImage, true);
 
 	DrawGraph(150, 450, enemyImage, true);*/
 
 	ScreenFlip();		// 裏画面と表画面を入れ替える
+}
+
+
+bool GameClearInit(void)
+{
+	int rtnFlag = true;	//返り値変数
+
+	scnID = SCN_ID_GAMECLEAR;
+
+	return rtnFlag;
+}
+
+void GameClearScene(void)
+{
+	GameClearDraw();
+
+
+
+	if (keyDownTrigger[KEY_ID_SPACE])
+	{
+
+		fadeOut = true;
+		//scnID = SCN_ID_TITLE;
+
+	}
+}
+
+void GameClearDraw(void)
+{
+	ClsDrawScreen();	//裏になっているﾊﾞｯﾌｧをｸﾘｱする。
+
+	DrawGraph(0, 0, clearImage, true);
+
+	ScreenFlip();
 }
 
 //ｹﾞｰﾑｵｰﾊﾞｰｼｰﾝの初期化
@@ -275,19 +339,19 @@ bool GameOverInit(void)
 
 void GameOverScene(void)
 {
-	
+
 	GameOverDraw();
 
-	
-	
+
+
 	if (keyDownTrigger[KEY_ID_SPACE])
 	{
-		
+
 		fadeOut = true;
 		//scnID = SCN_ID_TITLE;
-		
+
 	}
-	
+
 }
 
 void GameOverDraw(void)
@@ -299,8 +363,14 @@ void GameOverDraw(void)
 	ScreenFlip();
 }
 
-
-
-
-
-
+void CheckHitObj(void)
+{
+	if ((enemyPosX < shotPosX + SHOT_SIZE_X)
+		&& (enemyPosX + ENEMY_SIZE_X > shotPosX)
+		&& (enemyPosY < shotPosY + SHOT_SIZE_Y)
+		&& (enemyPosY + ENEMY_SIZE_Y > shotPosY))
+	{
+		enemyFlag = false;				//敵を死亡状態にする
+		shotFlag = false;							//弾を非発射状態にする
+	}
+}

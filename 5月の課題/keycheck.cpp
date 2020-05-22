@@ -30,6 +30,7 @@ void KeyCheck(void)
 
 	//Œ»İ‚ÌƒL[î•ñ‚ğæ“¾‚·‚é
 	keyNew[KEY_ID_SPACE] = CheckHitKey(KEY_INPUT_SPACE);
+	keyNew[KEY_ID_CLEAR] = CheckHitKey(KEY_INPUT_RCONTROL);
 	keyNew[KEY_ID_RIGHT] = CheckHitKey(KEY_INPUT_RIGHT);
 	keyNew[KEY_ID_LEFT] = CheckHitKey(KEY_INPUT_LEFT);
 	keyNew[KEY_ID_SHOT] = CheckHitKey(KEY_INPUT_LCONTROL);

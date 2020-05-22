@@ -137,6 +137,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="effect.cpp" />
+    <ClCompile Include="enemy.cpp" />
     <ClCompile Include="keycheck.cpp" />
     <ClCompile Include="main.cpp">
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">C:\Users\kaito\Desktop\DxLib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -147,12 +148,15 @@
       <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">C:\Users\kaito\Desktop\DxLib</AdditionalIncludeDirectories>
     </ClCompile>
     <ClCompile Include="player.cpp" />
+    <ClCompile Include="shot.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="effect.h" />
+    <ClInclude Include="enemy.h" />
     <ClInclude Include="keycheck.h" />
     <ClInclude Include="main.h" />
     <ClInclude Include="player.h" />
+    <ClInclude Include="shot.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

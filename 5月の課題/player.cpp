@@ -1,7 +1,10 @@
 #include "DxLib.h"
 #include "main.h"
-#include "player.h"
 #include "keycheck.h"
+#include "effect.h"
+#include "player.h"
+#include "Shot.h"
+#include "enemy.h"
 
 int playerImage;				//自機の画像ID
 int playerPosX;					//自機のX座標
@@ -16,7 +19,7 @@ void PlayerSystemInit(void)
 	playerPosY = 450;//初期位置
 	playerSpeed = 5;
 }
-void PlayerConttrol(void)
+void PlayerControl(void)
 {
 	if (CheckHitKey(KEY_INPUT_LEFT))
 	{
@@ -35,6 +38,17 @@ void PlayerConttrol(void)
 	if (playerPosX >= SCREEN_SIZE_X - PLAYER_SIZE_X)
 	{
 		playerPosX = SCREEN_SIZE_X - PLAYER_SIZE_X;
+	}
+	//弾の発射処理
+	if (CheckHitKey(KEY_INPUT_LCONTROL))
+	{
+		if (shotFlag == false)
+		{
+
+			shotPosX = playerPosX;
+			shotPosY = playerPosY;
+			shotFlag = true;
+		}
 	}
 
 }

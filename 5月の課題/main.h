@@ -4,6 +4,7 @@ enum SCN_ID
 {
 	SCN_ID_TITLE,		//ﾀｲﾄﾙ画面
 	SCN_ID_GAME,		//ｹﾞｰﾑ中
+	SCN_ID_GAMECLEAR,   //ｹﾞｰﾑクリア
 	SCN_ID_GAMEOVER,	//ｹﾞｰﾑｵｰﾊﾞｰ
 	SCN_ID_MAX,
 };
@@ -20,13 +21,9 @@ enum SCN_ID
 #define	GAME_SIZE_X		600	//ゲームエリアの横サイズ
 #define	GAME_SIZE_Y		500	//ゲームエリアの縦サイズ
 
-//自機
-#define	PLAYER_SIZE_X	48	//自機画像の横サイズ
-#define	PLAYER_SIZE_Y	48	//自機画像の縦サイズ
 
-//敵
-#define	ENEMY_SIZE_X	32	//敵画像の横サイズ
-#define	ENEMY_SIZE_Y	32	//敵画像の縦サイズ
+
+
 
 //プロトタイプ宣言
 //----------------------------------
@@ -44,12 +41,19 @@ void GameScene(void);
 
 void GameDraw(void);
 
+bool GameClearInit(void);
+
+void GameClearScene(void);
+
+void GameClearDraw(void);
+
 bool GameOverInit(void);
 
 void GameOverScene(void);
 
 void GameOverDraw(void);
 
+void CheckHitObj(void);
 
 //void PlayerDraw(void);
 
